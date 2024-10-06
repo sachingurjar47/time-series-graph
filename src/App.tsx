@@ -13,6 +13,7 @@ import {
 import React from "react";
 import AreaChart from "./components/AreaChart";
 import { data as _data } from "./data";
+import StackedBarChart from "./components/StackedBarChart";
 
 function App() {
   const [open, setOpen] = React.useState(true);
@@ -69,6 +70,7 @@ function App() {
           <Divider />
           <Box height={100}>
             <AreaChart data={data} />
+            <StackedBarChart data={data.slice(40, 50)} />
           </Box>
         </Box>
       </Drawer>
