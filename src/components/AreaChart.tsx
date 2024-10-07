@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import useResizeObserver from "../hooks/useResizeObserver";
 import { Box } from "@mui/material";
@@ -42,7 +42,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ data }) => {
     const areaClose = d3
       .area<DataPoint>()
       .x((d) => x(d.date)!)
-      .y0((d) => y(0)!)
+      .y0((_) => y(0)!)
       .y1((d) => y(d.close)!);
 
     const svg = d3

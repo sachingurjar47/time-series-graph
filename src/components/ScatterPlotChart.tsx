@@ -46,7 +46,7 @@ const ScatterPlotChart: React.FC<ScatterPlotChartProps> = ({
 
     const y = d3
       .scaleLinear()
-      .domain(d3.extent(data, (d) => 0) as [number, number])
+      .domain(d3.extent(data, (_) => 0) as [number, number])
       .nice()
       .range([height - margin.bottom, margin.top]);
 

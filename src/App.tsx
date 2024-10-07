@@ -26,7 +26,7 @@ function App() {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
   const data = _data.map((item) => ({
@@ -138,7 +138,7 @@ function App() {
                   shape={d3.symbolDiamond}
                   data={new Array(5)
                     .fill(0)
-                    ?.map((d, i) =>
+                    ?.map((_, i) =>
                       i % 2 === 0
                         ? { x: 10 * i, color: "#F87171" }
                         : { x: 10 * i, color: "#059669" }
@@ -154,7 +154,7 @@ function App() {
                   shape={d3.symbolDiamond}
                   data={new Array(10)
                     .fill(0)
-                    ?.map((d, i) =>
+                    ?.map((_, i) =>
                       i % 2 === 0
                         ? { x: 10 * i, color: "#F87171" }
                         : { x: 10 * i, color: "#059669" }
@@ -170,7 +170,7 @@ function App() {
                   shape={d3.symbolDiamond}
                   data={new Array(15)
                     .fill(0)
-                    ?.map((d, i) =>
+                    ?.map((_, i) =>
                       i % 3 === 0
                         ? { x: 10 * i, color: "#F87171" }
                         : { x: 10 * i, color: "#059669" }
@@ -186,7 +186,7 @@ function App() {
                   shape={d3.symbolDiamond}
                   data={new Array(10)
                     .fill(0)
-                    ?.map((d, i) =>
+                    ?.map((_, i) =>
                       i % 3 === 0
                         ? { x: 1 * i, color: "#F87171" }
                         : { x: 5 * i, color: "#059669" }

@@ -36,7 +36,7 @@ const StackedBarChart: React.FC<Props> = ({ data }) => {
 
     const x = d3
       .scaleBand<number>()
-      .domain(data.map((d, i) => i))
+      .domain(data.map((_, i) => i))
       .range([0, width])
       .padding(0.1);
 
@@ -65,7 +65,7 @@ const StackedBarChart: React.FC<Props> = ({ data }) => {
       .data((d) => d)
       .enter()
       .append("rect")
-      .attr("x", (d, i) => x(i)!)
+      .attr("x", (_, i) => x(i)!)
       .attr("y", (d) => yScale(d[1]))
       .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
       .attr("width", x.bandwidth());

@@ -530,14 +530,14 @@ export const podsLifeCycle: {
   title: "Pods Lifecycle",
   data: new Array(20)
     .fill(0)
-    ?.map((d, i) =>
+    ?.map((_, i) =>
       i % 2 === 0 ? { x: 10 * i, arrow: "down" } : { x: 10 * i, arrow: "up" }
     ),
   containers: new Array(4).fill(0)?.map((_, j) => ({
     title: `Container ${j + 1}`,
     data: new Array(5)
       .fill(0)
-      ?.map((d, i) =>
+      ?.map((_, i) =>
         i % 2 === 0 ? { x: 10 * i, arrow: "down" } : { x: 10 * i, arrow: "up" }
       ),
   })),
