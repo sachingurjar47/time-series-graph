@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
+import useResizeObserver from "../hooks/useResizeObserver";
+import { Box } from "@mui/material";
 
 interface DataPoint {
-  date: Date;
+  date: string;
   open: number;
   close: number;
 }
@@ -13,22 +15,30 @@ interface Props {
 
 const StackedBarChart: React.FC<Props> = ({ data }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const dimensions = useResizeObserver(wrapperRef);
 
   useEffect(() => {
-    const svg = d3.select(svgRef.current);
+    const { width, height } =
+      dimensions || wrapperRef?.current!.getBoundingClientRect();
+    const marginTop = 0;
+    const marginLeft = 0;
+    const svg = d3
+      .select(svgRef.current)
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .attr("style", "max-width: 100%; height: auto;");
     svg.selectAll("*").remove();
-    const margin = { top: 20, right: 30, bottom: 40, left: 40 };
-    const width = 1200 - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
-    const sortedData = data.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const stack = d3.stack<DataPoint>().keys(["open", "close"]);
-    const stackedData = stack(sortedData);
+    const stackedData = stack(data.map((d) => ({ ...d, date: d.date })));
 
-    const xScale = d3
-      .scaleUtc()
-      .domain(d3.extent(sortedData, (d) => d.date) as [Date, Date])
-      .range([0, width]);
+    const x = d3
+      .scaleBand<number>()
+      .domain(data.map((d, i) => i))
+      .range([0, width])
+      .padding(0.1);
 
     const yScale = d3
       .scaleLinear()
@@ -39,49 +49,33 @@ const StackedBarChart: React.FC<Props> = ({ data }) => {
     const color = d3
       .scaleOrdinal<string>()
       .domain(["open", "close"])
-      .range(["#ff6384", "#36a2eb"]);
+      .range(["#F59E0B", "#059669"]);
 
     const g = svg
       .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr("transform", `translate(${marginLeft},${marginTop})`);
 
-    g.selectAll("g")
+    g.selectAll("g.layer")
       .data(stackedData)
       .enter()
       .append("g")
+      .attr("class", "layer")
       .attr("fill", (d) => color(d.key))
       .selectAll("rect")
       .data((d) => d)
       .enter()
       .append("rect")
-      .attr("x", (d) => xScale(d.data.date))
+      .attr("x", (d, i) => x(i)!)
       .attr("y", (d) => yScale(d[1]))
-      .attr("height", (d) => {
-        const heightValue = yScale(d[0]) - yScale(d[1]);
-        return heightValue > 0 ? heightValue : 0;
-      })
-      .attr("width", (d, i) => {
-        const currentDate = d.data.date;
-        const nextDate = sortedData[i + 1]
-          ? sortedData[i + 1].date
-          : currentDate;
-        return xScale(nextDate) - xScale(currentDate);
-      });
+      .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+      .attr("width", x.bandwidth());
+  }, [data, dimensions]);
 
-    // X-axis
-    g.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(
-        d3
-          .axisBottom(xScale)
-          .ticks(width / 40)
-          .tickSizeOuter(0)
-      );
-
-    g.append("g").attr("class", "axis y-axis").call(d3.axisLeft(yScale));
-  }, [data]);
-
-  return <svg ref={svgRef} width={1200} height={600} />;
+  return (
+    <Box height="100%" ref={wrapperRef} width="100%">
+      <svg ref={svgRef} />
+    </Box>
+  );
 };
 
 export default StackedBarChart;
